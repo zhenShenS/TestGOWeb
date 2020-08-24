@@ -3,12 +3,14 @@ package function
 import (
 	"TestGOWeb/DB"
 	"TestGOWeb/function/mapFunc"
+	"TestGOWeb/function/reflectFunc"
 	"TestGOWeb/function/resDataFunc"
 	"TestGOWeb/recordlog"
 	"fmt"
 	"net/http"
 	"net/url"
 	"sync"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -60,8 +62,63 @@ func addMap(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	lock.RUnlock()
 }
 
+func TestXieChen(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	consumerAndProducerFunc()
+	// cacheChannal()
+}
+
+func TestReflectFunc(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	reflectFunc.TestReflectFunc()
+}
+
+func produce(p chan<- int) {
+	for i := 0; i < 10; i++ {
+		p <- i
+		fmt.Println("send:", i)
+	}
+}
+func consumer(c <-chan int) {
+	for i := 0; i < 10; i++ {
+		v := <-c
+		fmt.Println("receive:", v)
+	}
+}
+func consumerAndProducerFunc() {
+
+	ch := make(chan int)
+
+	go produce(ch)
+	go consumer(ch)
+}
+
+func cacheChannal() {
+	ch := make(chan int)
+	recordlog.Debug("==============================管道存值之前======================")
+	ch <- 1 //先管道中加入值
+	recordlog.Debug("==============================管道存值之后======================")
+
+	go func() {
+		// var x int
+		recordlog.Debug("==============================管道取值之前======================")
+		x := <-ch
+
+		recordlog.Debug("==============================管道取值之后======================")
+		fmt.Println("线程内部", x)
+	}()
+	go func() {
+		// var x int
+		recordlog.Debug("==============================管道取值之前======================")
+		x := <-ch
+		recordlog.Debug("==============================管道取值之后======================")
+		fmt.Println("线程内部", x)
+		fmt.Println("2")
+	}()
+
+	time.Sleep(time.Second * 1)
+}
+
 func init() {
-	go chackMap()
+	// go chackMap()
 }
 
 func chackMap() {
