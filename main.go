@@ -3,7 +3,8 @@ package main
 
 import (
 	"TestGOWeb/function"
-	"TestGOWeb/function/filter"
+	// "TestGOWeb/function/filter"
+	"TestGOWeb/function/filter2/test"
 	"TestGOWeb/recordlog"
 	"fmt"
 	"net/http" //导入go语言内置的http服务
@@ -30,7 +31,8 @@ func setRouter() {
 	routerA.GET("/sz.com/getMassage", function.TestFuncObj.GetMessage) //设置接口地址和都映射方法 后面会分析映射的方法
 	routerA.GET("/sz.com/getCoroutine", function.TestXieChen)
 	routerA.GET("/sz.com/TestReflectFunc", function.TestReflectFunc)
-	routerA.GET("/sz.com/TestFilter", filter.TestAccount)
+	// routerA.GET("/sz.com/TestFilter", filterT.FilterTlmpl.TestAccount)
+	routerA.GET("/sz.com/TestFilter2", filterT2.TestAccount)
 
 }
 

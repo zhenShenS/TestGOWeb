@@ -1,4 +1,4 @@
-package filter
+package filterT
 
 import (
 	"TestGOWeb/function/filter/account"
@@ -9,7 +9,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func TestAccount(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (ft *FilterTlmpl) TestAccount(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	queryForm, _ := url.ParseQuery(r.URL.RawQuery)
 	id := queryForm.Get("id")
 	a := account.New(id, "ZhangSan", 100)
@@ -18,11 +18,20 @@ func TestAccount(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 }
 
+var New = func() FilterT {
+	return &FilterTlmpl{}
+}
+
+type FilterT interface {
+	TestAccount(w http.ResponseWriter, r *http.Request, p httprouter.Params)
+}
+
+type FilterTlmpl struct{}
+
 func init() {
 	account.New = func(id, name string, value int) account.Account {
 		a := &account.AccountImpl{id, name, value}
 		p := &proxy.Proxy{a}
 		return p
 	}
-
 }
